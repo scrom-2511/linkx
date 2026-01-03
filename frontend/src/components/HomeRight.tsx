@@ -7,19 +7,27 @@ import { Button } from "./ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useCurrentFeatureStore } from "@/zustand/store";
 const HomeRight = () => {
-  const { title, description, index } = useCurrentFeatureStore((state) => ({
-    title: state.title,
-    description: state.description,
-    index: state.index,
-  }));
+  const index = useCurrentFeatureStore((state) => state.index);
+  const setIndex = useCurrentFeatureStore((state) => state.setIndex);
 
-  const { setTitle, setDescription, setIndex } = useCurrentFeatureStore(
-    (state) => ({
-      setTitle: state.setTitle,
-      setDescription: state.setDescription,
-      setIndex: state.setIndex,
-    })
-  );
+  const FeaturesArr = [
+    {
+      title: "Shorten Url",
+      description: "Enter your url to shorten it",
+    },
+    {
+      title: "Encrypt Url",
+      description: "Enter your url to encrypt it",
+    },
+    {
+      title: "Expire Url",
+      description: "Enter your url to set an expiry date-time to it",
+    },
+    {
+      title: "Qr Code Generator",
+      description: "Enter your url to and generate a qr code from it",
+    },
+  ];
 
   enum NavigationBtns {
     "next",
@@ -34,18 +42,24 @@ const HomeRight = () => {
     }
   };
 
+  const handleOnClickSubmitBtn = () => {
+    if (index === 0) {
+    } else if (index === 1) {
+    }
+  };
+
   return (
     <div className="w-full h-full flex justify-center sm:h-32">
       <Card className="w-full h-full justify-between border border-border sm:p-10 p-8 sm:max-w-5xl sm:min-h-[420px]">
         <div>
           <CardTitle className="text-xl font-bold mb-2">
-            {title.toUpperCase()}
+            {FeaturesArr[index].title.toUpperCase()}
           </CardTitle>
-          <CardDescription className="text-sm">{description}</CardDescription>
+          <CardDescription className="text-sm">{FeaturesArr[index].description}</CardDescription>
         </div>
-        <LinkShortner />
+        <Features />
         <div className="flex flex-col gap-3">
-          <Button className="w-full font-bold">{title.toUpperCase()}</Button>
+          <Button className="w-full font-bold">{FeaturesArr[index].title.toUpperCase()}</Button>
           <div className="flex sm:gap-5 flex-row ">
             <Button
               variant={"outline"}
