@@ -4,16 +4,26 @@ import LinkShortner from "../components/LinkShortner";
 import LinkEncrypter from "./LinkEncrypter";
 import LinkToQR from "./LinkToQR";
 import LinkExpirer from "./LinkExpirer";
+import { Card, CardDescription, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 const HomeRight = () => {
   return (
-    <div
-      className="h-[70%] w-[40%] mr-30 rounded-2xl max-[1575px]:mr-0 max-[1575px]:w-[70%] max-[1575px]:h-[50%]"
-      style={{
-        background:
-          "linear-gradient(to bottom right, #161a1d 5%, #27292b 30%,#09090a )",
-      }}
-    >
-      <Features />
+    <div className="w-full h-full flex justify-center sm:h-32">
+      <Card className="w-full h-full justify-between border border-border sm:p-10 p-8 sm:max-w-5xl sm:min-h-[420px]">
+        <div>
+          <CardTitle className="text-xl">SHORT URL</CardTitle>
+          <CardDescription className="text-sm">
+            Enter the URL which you want to shorten.
+          </CardDescription>
+        </div>
+        <LinkEncrypter />
+        <Button className="w-full">SHORTEN URL</Button>
+        <div className="flex sm:gap-5">
+          <Button variant={"outline"} className="w-1/2 cursor-pointer"><span><ChevronLeftIcon/></span>Previous</Button>
+          <Button variant={"outline"} className="w-1/2 cursor-pointer">Next <span><ChevronRightIcon/></span></Button>
+        </div>
+      </Card>
     </div>
   );
 };

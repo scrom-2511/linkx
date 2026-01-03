@@ -32,13 +32,13 @@ const LinkToQR = () => {
         <div
             className="h-full w-full flex flex-col items-center justify-center gap-8 text-white relative"
         >
-            <h1 className="font-secondary text-2xl font-bold mb-4 text-gray-200 max-[870px]:text-[16px]">
+            <h1 className="font-geist text-2xl font-bold mb-4 text-gray-200 max-[870px]:text-[16px]">
                 QR GENERATOR
             </h1>
             <input
                 onChange={(e) => setInput(e.target.value)}
                 type="text"
-                className="w-[80%] h-[5%] border-solid border-gray-500 border-1 rounded-xl backdrop-blur-3xl p-6 font-secondary"
+                className="w-[80%] h-[5%] border-solid border-gray-500 border-1 rounded-xl backdrop-blur-3xl p-6 font-geist"
                 placeholder="Enter Your URL"
             />
             <button
