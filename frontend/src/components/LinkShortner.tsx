@@ -1,62 +1,63 @@
-import axios from "axios";
-import NavigationButton from "./NavigationButton";
-import { useEffect, useState } from "react";
+import { useRef } from "react";
 import { Input } from "./ui/input";
 import { Item, ItemActions, ItemContent, ItemTitle } from "./ui/item";
 import { Copy } from "lucide-react";
-const LinkShortner = () => {
-  const [input, setInput] = useState("");
-  const [placeholder, setPlaceholder] = useState("");
-  const submitDataAndGetUrl = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/linkCustomizer",
-        {
-          link: input,
-          encrypted: false,
-        }
-      );
-      if (response.data.customLink) {
-        setPlaceholder("http://localhost:3000/" + response.data.customLink);
-      }
-    } catch (error) {
-      setPlaceholder("There was some problem at our end.");
-      console.log(error);
+import { Button } from "./ui/button";
+import { FeaturesArr } from "@/featuresArr";
+import { useCurrentFeatureStore } from "@/zustand/store";
+import { LinkShortner } from "@/services/linkShortner.service";
+import { copyToClipboard } from "@/services/copyToClipboard";
+import { ToastContainer, toast } from "react-toastify";
+const LinkShortnerComp = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const index = useCurrentFeatureStore((state) => state.index);
+  const handleOnClickSubmitBtn = async () => {
+    if (inputRef.current?.value) {
+      const somthing = new LinkShortner(inputRef.current?.value);
+      const res = await somthing.shorten();
     }
   };
-  useEffect(() => {
-    if (placeholder === "Copied!") {
-      setTimeout(() => {
-        setPlaceholder("");
-      }, 3000);
-    }
-  }, [placeholder]);
+
+  const notify = () => toast("Copied To Clipboard", { theme: "dark" });
+
+  let textToCopy = "hi there";
   return (
-    <div className="flex flex-col gap-5">
-      <Input
-        type="email"
-        placeholder="Email"
-        className="border text-sm placeholder:font-light sm:h-20"
-      />
-      <Item
-        variant="outline"
-        size="sm"
-        className="px-3 py-1 border sm:h-20"
-        asChild
-      >
-        <a href="#">
-          <ItemContent>
-            <ItemTitle className="text-sm text-muted-foreground font-light">
-              You will get the shortend url here.
-            </ItemTitle>
-          </ItemContent>
-          <ItemActions>
-            <Copy size={12} />
-          </ItemActions>
-        </a>
-      </Item>
-    </div>
+    <>
+      <div className="flex flex-col gap-5">
+        <Input
+          type="url"
+          placeholder="Enter the url"
+          className="border text-sm placeholder:font-light sm:h-10"
+          ref={inputRef}
+        />
+        <Item
+          variant="outline"
+          size="sm"
+          className="px-3 py-1 border sm:h-10"
+          asChild
+          onClick={async () => {
+            await copyToClipboard(textToCopy);
+            notify();
+          }}
+        >
+          <a>
+            <ItemContent>
+              <ItemTitle className="text-sm text-muted-foreground font-light">
+                You will get the shortend url here.
+              </ItemTitle>
+            </ItemContent>
+            <ItemActions>
+              <Copy size={12} />
+            </ItemActions>
+          </a>
+        </Item>
+      </div>
+      <Button className="w-full font-bold" onClick={handleOnClickSubmitBtn}>
+        {FeaturesArr[index].title.toUpperCase()}
+      </Button>
+      <ToastContainer />
+    </>
   );
 };
 
-export default LinkShortner;
+export default LinkShortnerComp;
