@@ -1,28 +1,45 @@
-import { Result } from "@/types";
-import axios, { AxiosInstance } from "axios";
+import { BACKEND_URL_API } from "@/config/app.config";
+import { BackendResponse, Result } from "@/types";
+import axios, { AxiosInstance, AxiosError } from "axios";
 
 export class ApiClient {
-  inputUrl: string;
-  axiosClient: AxiosInstance;
+  protected axiosClient: AxiosInstance;
 
-  constructor(inputUrl: string) {
-    this.inputUrl = inputUrl;
+  constructor() {
     this.axiosClient = axios.create();
   }
 
-  async backendCall<T>(endpoint: string): Promise<Result<T>> {
+  async backendCall<T>(
+    endpoint: string,
+    payload: object
+  ): Promise<BackendResponse<T>> {
     try {
-      const response = await this.axiosClient.post(endpoint, {
-        url: this.inputUrl,
-      });
+      const responseData = (
+        await this.axiosClient.post<BackendResponse<T>>(
+          `${BACKEND_URL_API}${endpoint}`,
+          payload
+        )
+      ).data;
+
+      if (responseData.success) {
+        console.log(responseData.data)
+        return {
+          success: true,
+          data: responseData.data as T,
+        };
+      }
 
       return {
-        success: true,
-        data: response.data,
+        success: false,
+        error: {
+          code: responseData.error.code,
+          message: responseData.error.message,
+        },
       };
-    } catch {
+    } catch (error) {
       return {
         success: false,
+        error: { code: "asdf", message: "" },
       };
     }
   }

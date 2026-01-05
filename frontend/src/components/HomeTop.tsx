@@ -1,6 +1,6 @@
 import { CardDescription, CardTitle } from "./ui/card";
 
-const HomeLeft = () => {
+const HomeTop = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full">
       <CardTitle className="text-5xl font-bold text-muted-foreground sm:text-8xl sm:font-black">LINK-X</CardTitle>
@@ -9,4 +9,4 @@ const HomeLeft = () => {
   );
 };
 
-export default HomeLeft;
+export default HomeTop;

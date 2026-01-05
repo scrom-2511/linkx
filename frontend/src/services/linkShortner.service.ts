@@ -1,24 +1,23 @@
+import { BackendResponse } from "@/types";
 import { ApiClient } from "./apiClient.service";
 
 export interface ShortenResponse {
-  shortened: string;
+  shortenedLink: string;
+}
+
+export interface ShortenData {
+  link: string;
 }
 
 export class LinkShortner extends ApiClient {
   endpoint: string;
 
-  constructor(inputUrl: string, endpoint: string) {
-    super(inputUrl);
-    this.endpoint = endpoint;
+  constructor() {
+    super();
+    this.endpoint = "/shortenLink";
   }
 
-  async shorten(): Promise<string | null> {
-    const res = await this.backendCall<ShortenResponse>(this.endpoint);
-
-    if (res.success && res.data) {
-      return res.data.shortened;
-    }
-
-    return null;
+  async shorten(data: ShortenData): Promise<BackendResponse<ShortenResponse>> {
+    return await this.backendCall<ShortenResponse>(this.endpoint, data);
   }
 }

@@ -11,27 +11,33 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { CalendarIcon } from "lucide-react";
+import { useExtraInputFields } from "@/zustand/store";
 
 export function DateTimePicker24h() {
   const [date, setDate] = React.useState<Date>();
   const [isOpen, setIsOpen] = React.useState(false);
+  const setDateAndTime = useExtraInputFields((state) => state.setDateAndTime);
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const handleDateSelect = (selectedDate: Date | undefined) => {
     if (selectedDate) {
       setDate(selectedDate);
+      setDateAndTime(new Date(selectedDate));
     }
   };
 
   const handleTimeChange = (type: "hour" | "minute", value: string) => {
     if (date) {
       const newDate = new Date(date);
+
       if (type === "hour") {
         newDate.setHours(parseInt(value));
-      } else if (type === "minute") {
+      } else {
         newDate.setMinutes(parseInt(value));
       }
+
       setDate(newDate);
+      setDateAndTime(new Date(newDate));
     }
   };
 
@@ -42,14 +48,15 @@ export function DateTimePicker24h() {
           variant="default"
           className={cn(
             "w-full justify-start text-left border bg-transparent hover:bg-accent/50 cursor-pointer",
-            !date && "text-muted-foreground"
+            !date
+              ? "text-primary font-extralight text-sm"
+              : "text-selected font-light" // Add this line to change color when selected
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? (
             format(date, "MM/dd/yyyy hh:mm")
           ) : (
-            <span>MM/DD/YYYY hh:mm</span>
+            <span>Enter the date</span>
           )}
         </Button>
       </PopoverTrigger>

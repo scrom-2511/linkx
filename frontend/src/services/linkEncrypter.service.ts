@@ -1,24 +1,26 @@
+import { BackendResponse } from "@/types";
 import { ApiClient } from "./apiClient.service";
 
 export interface EncrypterResponse {
-  encrypted: string;
+  encryptedLink: string;
+}
+
+export interface EncrypterData {
+  link: string;
+  password: string;
 }
 
 export class LinkEncrypter extends ApiClient {
   endpoint: string;
 
-  constructor(inputUrl: string, endpoint: string) {
-    super(inputUrl);
-    this.endpoint = endpoint;
+  constructor() {
+    super();
+    this.endpoint = "/encryptLink";
   }
 
-  async encrypter(): Promise<string | null> {
-    const res = await this.backendCall<EncrypterResponse>(this.endpoint);
-
-    if (res.success && res.data) {
-      return res.data.encrypted;
-    }
-
-    return null;
+  async encrypt(
+    data: EncrypterData
+  ): Promise<BackendResponse<EncrypterResponse>> {
+    return await this.backendCall<EncrypterResponse>(this.endpoint, data);
   }
 }

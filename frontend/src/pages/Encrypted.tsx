@@ -1,59 +1,82 @@
-import HomeLeft from "../components/HomeLeft";
-import { useDispatch, useSelector } from "react-redux";
-import { updatePassword } from "../features/LinkEncrypter/PasswordSlice";
-import axios from "axios";
-import { RootState } from "../app/store";
-const Encrypted = () => {
-  const password = useSelector((state: RootState) => state.password.value);
-  const dispatch = useDispatch();
+import HomeTop from "@/components/HomeTop";
+import { Button } from "@/components/ui/button";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { PasswordChecker } from "@/services/passwordChecker";
+import { useCurrentUrlStore } from "@/zustand/store";
+import { redirect } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
-  const redirectToPage = async () => {
-    try {
-      const customLink = window.location.href.split("?")[1];
-      const response = await axios.post(
-        `http://localhost:3000/encrypted/${customLink}`,
-        {
-          password
-        }
-      );
-      if (response.data.message === "Success") {
-        console.log(response.data.link);
-        window.location.href = response.data.link;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const Encrypted = () => {
   return (
-    <div className="w-screen h-screen flex flex-row items-center gap-60 max-[1575px]:flex-col max-[1575px]:gap-20">
-      <HomeLeft />
-      <div
-        className="h-[70%] w-[40%] mr-30 rounded-2xl max-[1575px]:mr-0 max-[1575px]:w-[70%] max-[1575px]:h-[50%]"
-        style={{
-          background:
-            "linear-gradient(to bottom right, #161a1d 5%, #27292b 30%,#09090a )",
-        }}
-      >
-        <div className="h-full w-full flex flex-col items-center justify-center gap-8 text-white relative">
-          <h1 className="font-secondary text-2xl font-bold mb-4 text-gray-200 max-[870px]:text-[16px]">
-            ENTER YOU PASSWORD
-          </h1>
-          <input
-            onChange={(e) => dispatch(updatePassword(e.target.value))}
-            type="text"
-            className="w-[80%] h-[5%] border-solid border-gray-500 border-1 rounded-xl backdrop-blur-3xl p-6 font-secondary"
-            placeholder="PASSWORD"
-          />
-          <button
-            onClick={redirectToPage}
-            className="border-solid border-gray-500 border-1 px-6 py-2 rounded-4xl font-primary font-medium text-sm cursor-pointer mb-10"
-          >
-            OPEN
-          </button>
-        </div>
+    <div className="w-screen h-screen grid grid-rows-[250px_auto] sm:grid sm:grid-rows-2 p-10">
+      <HomeTop />
+      <div className="w-full h-full flex justify-center sm:h-32">
+        <Card className="w-full h-full justify-between border border-border sm:p-10 p-8 sm:max-w-5xl sm:min-h-[420px]">
+          <div>
+            <CardTitle className="text-xl font-bold mb-2">
+              ENTER PASSWORD
+            </CardTitle>
+            <CardDescription className="text-sm">
+              Enter the password to access the website.
+            </CardDescription>
+          </div>
+          <Features />
+          <FeatureCardsBtns />
+        </Card>
       </div>
     </div>
   );
 };
 
 export default Encrypted;
+
+const FeatureCardsBtns = () => {
+  const parts = window.location.href.split("/");
+  const link = parts[parts.length - 1];
+  const currentInputUrl = useCurrentUrlStore((state) => state.currentInputUrl);
+  const setCurrentResultUrl = useCurrentUrlStore(
+    (state) => state.setCurrentResultUrl
+  );
+  const handleOnClickSubmitBtn = async () => {
+    console.log("i was clicked")
+    const passowrdChecker = new PasswordChecker();
+    const res = await passowrdChecker.check({
+      encryptedLink: link,
+      password: currentInputUrl,
+    });
+    if (res.success) {
+      console.log("hey i was clickedasdfffff")
+      window.location.href = res.data.passwordCheckeredLink
+    } else {
+      console.log("hey i was ")
+      setCurrentResultUrl(res.error.message);
+    }
+  };
+
+  return (
+    <div className="flex flex-col">
+      <Button
+        className="w-full font-bold mb-4 cursor-pointer"
+        onClick={handleOnClickSubmitBtn}
+      >
+        Proceed to website.
+      </Button>
+      <ToastContainer />
+    </div>
+  );
+};
+
+const Features = () => {
+  const setCurrentInputUrl = useCurrentUrlStore(
+    (state) => state.setCurrentInputUrl
+  );
+  return (
+    <Input
+      type="url"
+      placeholder="Enter the url"
+      className="border placeholder:font-light sm:h-20 text-2xl"
+      onChange={(e) => setCurrentInputUrl(e.target.value)}
+    />
+  );
+};

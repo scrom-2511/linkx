@@ -1,12 +1,11 @@
-
-import HomeRight from '../components/HomeRight'
-import HomeLeft from '../components/HomeLeft'
+import HomeBottom from "@/components/HomeBottom"
+import HomeTop from "@/components/HomeTop"
 
 const Home = () => {
   return (
-    <div className='w-screen h-screen flex flex-row items-center gap-60 max-[1575px]:flex-col max-[1575px]:gap-20'>
-        <HomeLeft/>
-        <HomeRight/>
+    <div className="w-screen h-screen grid grid-rows-[250px_auto] sm:grid sm:grid-rows-2 p-10">
+        <HomeTop/>
+        <HomeBottom/>
     </div>
   )
 }
