@@ -26,20 +26,15 @@ export const encryptLink = async (req: Request, res: Response) => {
       return res.status(HttpStatus.OK).json({
         success: true,
         data: {
-          shortenedLink: dataExists.encryptedLink,
+          encryptedLink: dataExists.encryptedLink,
         },
       });
     }
 
-    let newEncryptedLink = "e-";
+    let newEncryptedLink = "x-" + shortLinkGenerator();
 
-    while (true) {
-      newEncryptedLink = newEncryptedLink + shortLinkGenerator();
-      if (await EncryptLinkModel.findOne({ encryptedLink: newEncryptedLink })) {
-        newEncryptedLink = "e-";
-      } else {
-        break;
-      }
+    while (await EncryptLinkModel.findOne({ expirerLink: newEncryptedLink })) {
+      newEncryptedLink = "x-" + shortLinkGenerator();
     }
 
     await EncryptLinkModel.create({

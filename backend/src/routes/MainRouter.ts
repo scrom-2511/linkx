@@ -1,10 +1,23 @@
-import { Router } from "express";
-import { CustomizeLinkController } from "../controllers/CustomizeLink.controller";
-import { RedirectController } from "../controllers/Redirect.controller";
-import { RedirectEncryptedController } from "../controllers/RedirectEncrypted.controller";
+import { Request, Response, Router } from "express";
+import { shortenLink } from "../controllers/shorten.controller";
+import { encryptLink } from "../controllers/encrypter.controller";
+import { expireLink } from "../controllers/expirerLink.controller";
+import { encrypterRedirect } from "../controllers/encrypterRedirect.controller";
 
 export const MainRouter = Router();
 
-MainRouter.post("/linkCustomizer", (req, res) => {CustomizeLinkController(req, res)});
-MainRouter.get("/:link", (req, res) => {RedirectController(req, res)});
-MainRouter.post("/encrypted/:link", (req, res) => {RedirectEncryptedController(req, res)});
+MainRouter.post("/shortenLink", (req, res) => {
+  shortenLink(req, res);
+});
+
+MainRouter.post("/encryptLink", (req, res) => {
+  encryptLink(req, res);
+});
+
+MainRouter.post("/expirerLink", (req, res) => {
+  expireLink(req, res);
+});
+
+MainRouter.post("/passChecker", (req, res) => {
+  encrypterRedirect(req, res);
+});

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ShortenLinkModel } from "../model/shortLink.model";
+import { FRONTEND_URL } from "../config/app.config";
 
 export const shortenRedirect = async (req: Request, res: Response) => {
   try {
@@ -10,12 +11,12 @@ export const shortenRedirect = async (req: Request, res: Response) => {
     });
 
     if (!originalLink) {
-      return res.status(404).redirect("http://localhost:5173" + "/notFound");
+      return res.status(404).redirect(`${FRONTEND_URL}` + "/notFound");
     }
 
     return res.redirect(originalLink.link);
   } catch (error) {
     console.error("Redirect error:", error);
-    return res.redirect("/someError");
+    return res.redirect(`${FRONTEND_URL}` + "/someError");
   }
 };

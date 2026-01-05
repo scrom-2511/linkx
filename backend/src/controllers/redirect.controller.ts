@@ -2,14 +2,18 @@ import { Request, Response } from "express";
 import { encrypterRedirect } from "./encrypterRedirect.controller";
 import { shortenRedirect } from "./shortenRedirect.controller";
 import { ERROR_CODES, HttpStatus } from "../types";
+import { FRONTEND_URL } from "../config/app.config";
+import { expireLink } from "./expirerLink.controller";
+import { expirerRedirect } from "./expirerRedirect.controller";
 
 export const redirectController = async (req: Request, res: Response) => {
   try {
     const params = req.params.link;
+    console.log(params.split("-")[0] == "e");
     if (params.split("-")[0] == "e") {
-      await encrypterRedirect(req, res);
+      return res.redirect(`${FRONTEND_URL}`+"/encrypted" + `/${params}`);
     } else if (params.split("-")[0] == "x") {
-      return res.redirect("http://localhost:5173/encrypted");
+      await expirerRedirect(req, res);
     } else {
       await shortenRedirect(req, res);
     }

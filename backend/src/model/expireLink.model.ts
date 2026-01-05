@@ -4,7 +4,7 @@ const LinkSchema = new mongoose.Schema(
   {
     link: { type: String, required: true },
     dateAndTime: { type: Date, required: true },
-    expirerLink: { type: Date, required: true },
+    expirerLink: { type: String, required: true },
   },
   { timestamps: true }
 );

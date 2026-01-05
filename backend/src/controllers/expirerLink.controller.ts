@@ -6,9 +6,15 @@ import { ERROR_CODES, HttpStatus } from "../types";
 
 export const expireLink = async (req: Request, res: Response) => {
   try {
-    const validateData = expireLinkType.safeParse(req.body);
+    const dateAndTime = new Date(req.body.dateAndTime);
+    const link = req.body.link;
+    console.log({ dateAndTime, link });
+
+    const validateData = expireLinkType.safeParse({ link, dateAndTime });
+
     if (!validateData.success) {
-      return res.status(HttpStatus.BAD_REQUEST).json({
+      console.log(validateData.error.errors);
+      return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
         success: false,
         error: {
           code: ERROR_CODES.INVALID_INPUT.code,
@@ -22,7 +28,7 @@ export const expireLink = async (req: Request, res: Response) => {
     });
 
     if (dataExists) {
-      return res.status(HttpStatus.OK).json({
+      return res.status(HttpStatus.CONFLICT).json({
         success: true,
         data: {
           expirerLink: dataExists.expirerLink,
@@ -30,15 +36,10 @@ export const expireLink = async (req: Request, res: Response) => {
       });
     }
 
-    let newExpireLink = "x-";
+    let newExpireLink = "x-" + shortLinkGenerator();
 
-    while (true) {
-      newExpireLink = newExpireLink + shortLinkGenerator();
-      if (await ExpireLinkModel.findOne({ expirerLink: newExpireLink })) {
-        newExpireLink = "x-";
-      } else {
-        break;
-      }
+    while (await ExpireLinkModel.findOne({ expirerLink: newExpireLink })) {
+      newExpireLink = "x-" + shortLinkGenerator();
     }
 
     await ExpireLinkModel.create({
@@ -53,7 +54,7 @@ export const expireLink = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error in expireLink controller:", error);
     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       success: false,
       error: {

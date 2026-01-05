@@ -31,15 +31,10 @@ export const shortenLink = async (req: Request, res: Response) => {
       });
     }
 
-    let newShortLink = "s-";
+    let newShortLink = "x-" + shortLinkGenerator();
 
-    while (true) {
-      newShortLink = newShortLink + shortLinkGenerator();
-      if (await ShortenLinkModel.findOne({ shotenedLink: newShortLink })) {
-        newShortLink = "s-";
-      } else {
-        break;
-      }
+    while (await ShortenLinkModel.findOne({ expirerLink: newShortLink })) {
+      newShortLink = "x-" + shortLinkGenerator();
     }
 
     await ShortenLinkModel.create({ ...req.body, shortenedLink: newShortLink });

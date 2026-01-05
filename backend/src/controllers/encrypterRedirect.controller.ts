@@ -1,18 +1,30 @@
 import { Request, Response } from "express";
 import { EncryptLinkModel } from "../model/encryptLink.model";
 import { ERROR_CODES, HttpStatus } from "../types";
+import { FRONTEND_URL } from "../config/app.config";
 
 export const encrypterRedirect = async (req: Request, res: Response) => {
   try {
-    const { encryptedLink, password } = req.body.password;
+    const { encryptedLink, password } = req.body;
     const originalLink = await EncryptLinkModel.findOne({ encryptedLink });
 
     if (!originalLink) {
-      return res.redirect("/invalidpage");
+      return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
+        success: false,
+        error: {
+          code: ERROR_CODES.RESOURCE_NOT_FOUND.code,
+          message: ERROR_CODES.RESOURCE_NOT_FOUND.message,
+        },
+      });
     }
 
     if (originalLink?.password === password) {
-      return res.redirect(originalLink.link);
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        data: {
+          passwordCheckeredLink: originalLink?.link,
+        },
+      });
     }
 
     return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
@@ -24,6 +36,6 @@ export const encrypterRedirect = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error(error);
-    return res.redirect("/someError");
+    return res.redirect(`${FRONTEND_URL}` + "/someError");
   }
 };
