@@ -1,14 +1,17 @@
-import { useRef, useState } from "react";
-import * as htmlToImage from "html-to-image";
-import QRCode from "react-qr-code";
-import { Input } from "./ui/input";
 import { useCurrentUrlStore, useExtraInputFields } from "@/zustand/store";
+import { motion } from "framer-motion";
+import * as htmlToImage from "html-to-image";
 import { Download, Maximize } from "lucide-react";
+import { useRef } from "react";
+import QRCode from "react-qr-code";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+
 const LinkToQR = () => {
   const setCurrentInputUrl = useCurrentUrlStore(
     (state) => state.setCurrentInputUrl
   );
+  const s = useExtraInputFields((state) => state.renderer)
   const renderqr = useExtraInputFields((state) => state.renderer);
   const setRenderer = useExtraInputFields((state) => state.setRenderer);
   const currentInputUrl = useCurrentUrlStore((state) => state.currentInputUrl);
@@ -34,14 +37,28 @@ const LinkToQR = () => {
       <Input
         type="url"
         placeholder="Enter the url"
-        className="border placeholder:font-light sm:h-20 text-2xl"
+        className="border text-sm placeholder:font-light sm:h-10"
         onChange={(e) => setCurrentInputUrl(e.target.value)}
       />
     );
 
   if (renderqr === true)
     return (
-      <div className="flex gap-5 items-center justify-center">
+      <motion.div
+        initial={{
+          opacity: 0,
+          scale: 1.05,
+          filter: "blur(12px)",
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          filter: "blur(0px)",
+        }}
+        transition={{
+          duration: 0.4,
+          ease: "easeOut",
+        }} className="flex gap-5 items-center justify-center">
         <QRCode
           ref={qrCodeRef}
           value={currentInputUrl}
@@ -49,6 +66,7 @@ const LinkToQR = () => {
           bgColor="#00000000"
           fgColor="#a995c9"
         ></QRCode>
+        <a ref={pngUrlRef} style={{ display: "none" }} />
         <div className="flex flex-col gap-5">
           <Button onClick={onClickDownload}>
             <Download />
@@ -57,7 +75,7 @@ const LinkToQR = () => {
             <Maximize />
           </Button>
         </div>
-      </div>
+      </motion.div>
     );
 };
 

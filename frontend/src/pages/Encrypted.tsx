@@ -39,18 +39,15 @@ const FeatureCardsBtns = () => {
     (state) => state.setCurrentResultUrl
   );
   const handleOnClickSubmitBtn = async () => {
-    console.log("i was clicked")
     const passowrdChecker = new PasswordChecker();
     const res = await passowrdChecker.check({
       encryptedLink: link,
       password: currentInputUrl,
     });
     if (res.success) {
-      console.log("hey i was clickedasdfffff")
       window.location.href = res.data.passwordCheckeredLink
     } else {
-      console.log("hey i was ")
-      setCurrentResultUrl(res.error.message);
+      setCurrentResultUrl({type: "error", errorMessage: res.error.message});
     }
   };
 
@@ -62,7 +59,6 @@ const FeatureCardsBtns = () => {
       >
         Proceed to website.
       </Button>
-      <ToastContainer />
     </div>
   );
 };

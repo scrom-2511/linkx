@@ -8,30 +8,49 @@ export type CurrentFeatureStore = {
 export const useCurrentFeatureStore = create<CurrentFeatureStore>((set) => ({
   index: 0,
   setIndex: (index) =>
-    set((state) => ({
+    set(() => ({
       index: index,
     })),
 }));
 
+export type ResultUrl =
+  | {
+      type: "success";
+      url: string;
+    }
+  | {
+      type: "error";
+      errorMessage: string;
+    }
+  | {
+      type: "info";
+      message: string;
+    };
+
 export type CurrentUrlStore = {
   currentInputUrl: string;
-  currentResultUrl: string;
+  currentResultUrl: ResultUrl;
   setCurrentInputUrl: (url: string) => void;
-  setCurrentResultUrl: (url: string) => void;
+  setCurrentResultUrl: (data: ResultUrl) => void;
 };
 
 export const useCurrentUrlStore = create<CurrentUrlStore>((set) => ({
   currentInputUrl: "",
-  currentResultUrl: "You will get the result url here.",
+  currentResultUrl: {
+    type: "success",
+    color: "text-white",
+    url: "You will get the modified link here.",
+  },
 
   setCurrentInputUrl: (url) =>
-    set((state) => ({
+    set({
       currentInputUrl: url,
-    })),
-  setCurrentResultUrl: (url) =>
-    set((state) => ({
-      currentResultUrl: url,
-    })),
+    }),
+
+  setCurrentResultUrl: (data) =>
+    set({
+      currentResultUrl: data,
+    }),
 }));
 
 export type ExtraInputFields = {
@@ -48,15 +67,15 @@ export const useExtraInputFields = create<ExtraInputFields>((set) => ({
   dateAndTime: "",
   renderer: false,
   setPassword: (password) =>
-    set((state) => ({
+    set(() => ({
       password: password,
     })),
   setDateAndTime: (dateAndTime) =>
-    set((state) => ({
+    set(() => ({
       dateAndTime: dateAndTime,
     })),
   setRenderer: (val) =>
-    set((state) => ({
+    set(() => ({
       renderer: val,
     })),
 }));

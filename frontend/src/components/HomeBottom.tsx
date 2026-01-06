@@ -1,29 +1,43 @@
-import { Card, CardDescription, CardTitle } from "./ui/card";
-import { Button } from "./ui/button";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { BACKEND_URL } from "@/config/app.config";
+import { FeaturesArr } from "@/featuresArr";
+import { LinkEncrypter } from "@/services/linkEncrypter.service";
+import { LinkExpirer } from "@/services/linkExpirer.service";
+import { LinkShortner } from "@/services/linkShortner.service";
 import {
   useCurrentFeatureStore,
   useCurrentUrlStore,
   useExtraInputFields,
 } from "@/zustand/store";
-import { FeaturesArr } from "@/featuresArr";
-import LinkShortnerComp from "./LinkShortnerComp";
+import { motion } from "framer-motion";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useState } from "react";
 import LinkEncrypterComp from "./LinkEncrypterComp";
 import LinkExpirerComp from "./LinkExpirerComp";
-import { ToastContainer } from "react-toastify";
-import { LinkShortner, ShortenResponse } from "@/services/linkShortner.service";
+import LinkShortnerComp from "./LinkShortnerComp";
 import LinkToQR from "./LinkToQRComp";
-import { LinkEncrypter } from "@/services/linkEncrypter.service";
-import { LinkExpirer } from "@/services/linkExpirer.service";
-import { BACKEND_URL } from "@/config/app.config";
-import { useState } from "react";
-import { BackendResponse } from "@/types";
+import { Button } from "./ui/button";
+import { Card, CardDescription, CardTitle } from "./ui/card";
 const HomeBottom = () => {
   const index = useCurrentFeatureStore((state) => state.index);
 
   return (
-    <div className="w-full flex justify-center">
-      <Card className="w-full border border-border sm:p-10 p-8 sm:max-w-5xl sm:min-h-[450px] justify-between">
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        delay: 0.4,
+        duration: 0.5,
+        ease: "easeOut",
+      }}
+      className="w-full flex justify-center items-center mt-10"
+    >
+      <Card className="w-full border border-border sm:p-10 p-8 sm:max-w-5xl sm:h-[450px] h-[480px] justify-between bg-card/60 backdrop-blur-lg">
         <div>
           <CardTitle className="text-xl font-bold mb-2">
             {FeaturesArr[index].title.toUpperCase()}
@@ -32,10 +46,11 @@ const HomeBottom = () => {
             {FeaturesArr[index].description}
           </CardDescription>
         </div>
+
         <Features />
         <FeatureCardsBtns />
       </Card>
-    </div>
+    </motion.div>
   );
 };
 
@@ -58,7 +73,9 @@ const FeatureCardsBtns = () => {
         link: currentInputUrl,
       });
       setCurrentResultUrl(
-        res.success ? res.data.shortenedLink : res.error.message
+        res.success
+          ? { type: "success", url: `${BACKEND_URL}` + res.data.shortenedLink }
+          : { type: "error", errorMessage: res.error.message }
       );
     },
 
@@ -68,7 +85,9 @@ const FeatureCardsBtns = () => {
         password,
       });
       setCurrentResultUrl(
-        res.success ? res.data.encryptedLink : res.error.message
+        res.success
+          ? { type: "success", url: `${BACKEND_URL}` + res.data.encryptedLink }
+          : { type: "error", errorMessage: res.error.message }
       );
     },
 
@@ -78,7 +97,9 @@ const FeatureCardsBtns = () => {
         dateAndTime: dateAndTime as Date,
       });
       setCurrentResultUrl(
-        res.success ? res.data.expiredLink : res.error.message
+        res.success
+          ? { type: "success", url: `${BACKEND_URL}` + res.data.expirerLink }
+          : { type: "error", errorMessage: res.error.message }
       );
     },
 
@@ -118,16 +139,15 @@ const FeatureCardsBtns = () => {
   return (
     <div className="flex flex-col">
       <Button
-        className={`w-full font-bold mb-4 ${visibility}`}
+        className={`w-full font-bold mb-4 ${visibility} cursor-pointer`}
         onClick={handleOnClickSubmitBtn}
       >
         {FeaturesArr[index].title.toUpperCase()}
       </Button>
-      <ToastContainer />
       <div className="flex sm:gap-5 flex-row">
         <Button
           variant={"outline"}
-          className="w-1/2 cursor-pointer h-10"
+          className="w-1/2 cursor-pointer h-10 cursor-pointer"
           onClick={() => handleOnClickNavigatinBtn(NavigationBtns.previous)}
         >
           <span>
@@ -137,7 +157,7 @@ const FeatureCardsBtns = () => {
         </Button>
         <Button
           variant={"outline"}
-          className="w-1/2 cursor-pointer h-10"
+          className="w-1/2 cursor-pointer h-10 cursor-pointer"
           onClick={() => handleOnClickNavigatinBtn(NavigationBtns.next)}
         >
           Next{" "}

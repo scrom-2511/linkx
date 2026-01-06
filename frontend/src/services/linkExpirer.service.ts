@@ -2,7 +2,7 @@ import { BackendResponse } from "@/types";
 import { ApiClient } from "./apiClient.service";
 
 export interface ExpirerResponse {
-  expiredLink: string;
+  expirerLink: string;
 }
 
 export interface ExpirerData {
@@ -19,7 +19,6 @@ export class LinkExpirer extends ApiClient {
   }
 
   async expirer(data: ExpirerData): Promise<BackendResponse<ExpirerResponse>> {
-    console.log(data);
     return await this.backendCall<ExpirerResponse>(this.endpoint, data);
   }
 }

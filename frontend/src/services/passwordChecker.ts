@@ -1,4 +1,4 @@
-import { BackendResponse, Result } from "@/types";
+import { BackendResponse } from "@/types";
 import { ApiClient } from "./apiClient.service";
 
 export interface PasswordCheckerResponse {

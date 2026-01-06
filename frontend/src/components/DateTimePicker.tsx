@@ -1,7 +1,6 @@
-import * as React from "react";
 import { format } from "date-fns";
+import * as React from "react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -10,7 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useExtraInputFields } from "@/zustand/store";
 
 export function DateTimePicker24h() {
@@ -49,8 +48,8 @@ export function DateTimePicker24h() {
           className={cn(
             "w-full justify-start text-left border bg-transparent hover:bg-accent/50 cursor-pointer",
             !date
-              ? "text-primary font-extralight text-sm"
-              : "text-selected font-light" // Add this line to change color when selected
+              ? "text-primary font-light text-sm"
+              : "text-selected font-light"
           )}
         >
           {date ? (

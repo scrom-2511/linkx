@@ -1,12 +1,12 @@
 import { BACKEND_URL_API } from "@/config/app.config";
-import { BackendResponse, Result } from "@/types";
-import axios, { AxiosInstance, AxiosError } from "axios";
+import { BackendResponse } from "@/types";
+import axios, { AxiosInstance } from "axios";
 
 export class ApiClient {
   protected axiosClient: AxiosInstance;
 
   constructor() {
-    this.axiosClient = axios.create();
+    this.axiosClient = axios.create({});
   }
 
   async backendCall<T>(
@@ -22,7 +22,6 @@ export class ApiClient {
       ).data;
 
       if (responseData.success) {
-        console.log(responseData.data)
         return {
           success: true,
           data: responseData.data as T,
@@ -37,9 +36,15 @@ export class ApiClient {
         },
       };
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const data = error.response?.data as BackendResponse<T>;
+        if (data && !data.success) {
+          return { success: false, error: data.error };
+        }
+      }
       return {
         success: false,
-        error: { code: "asdf", message: "" },
+        error: { code: "", message: "There was some error from our side." },
       };
     }
   }

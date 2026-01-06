@@ -1,12 +1,14 @@
+import { copyToClipboard } from "@/services/copyToClipboard";
 import { useCurrentUrlStore, useExtraInputFields } from "@/zustand/store";
+import { Copy } from "lucide-react";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 import { Input } from "./ui/input";
 import { Item, ItemActions, ItemContent, ItemTitle } from "./ui/item";
-import { Copy } from "lucide-react";
-import { toast } from "react-toastify";
-import { copyToClipboard } from "@/services/copyToClipboard";
-import { useEffect } from "react";
 const LinkEncrypterComp = () => {
-  const textToCopy = useCurrentUrlStore((state) => state.currentResultUrl);
+  const currentResultUrl = useCurrentUrlStore(
+    (state) => state.currentResultUrl
+  );
   const setPassword = useExtraInputFields((state) => state.setPassword);
   const setInput = useCurrentUrlStore((state) => state.setCurrentInputUrl);
 
@@ -16,7 +18,10 @@ const LinkEncrypterComp = () => {
     (state) => state.setCurrentResultUrl
   );
   useEffect(() => {
-    setCurrentResultUrl("You will get the encrypted link here.");
+    setCurrentResultUrl({
+      type: "info",
+      message: "You will get the encrypted url over here.",
+    });
   }, []);
 
   return (
@@ -40,14 +45,28 @@ const LinkEncrypterComp = () => {
           className="px-3 py-1 sm:h-10 hover:bg-accent/50 border"
           asChild
           onClick={async () => {
-            await copyToClipboard(textToCopy);
+            await copyToClipboard(
+              currentResultUrl.type === "success" ? currentResultUrl.url : ""
+            );
             notify();
           }}
         >
           <div>
             <ItemContent>
-              <ItemTitle className="text-sm text-muted-foreground font-light">
-                {textToCopy}
+              <ItemTitle
+                className={`text-sm font-light ${
+                  currentResultUrl.type === "success"
+                    ? "text-white"
+                    : currentResultUrl.type === "info"
+                    ? "text-muted-foreground"
+                    : "text-destructive"
+                }`}
+              >
+                {currentResultUrl.type === "success"
+                  ? currentResultUrl.url
+                  : currentResultUrl.type === "error"
+                  ? currentResultUrl.errorMessage
+                  : currentResultUrl.message}
               </ItemTitle>
             </ItemContent>
             <ItemActions>

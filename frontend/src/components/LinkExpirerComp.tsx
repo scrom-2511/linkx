@@ -7,7 +7,9 @@ import { useCurrentUrlStore } from "@/zustand/store";
 import { copyToClipboard } from "@/services/copyToClipboard";
 import { useEffect } from "react";
 const LinkExpirerComp = () => {
-  const textToCopy = useCurrentUrlStore((state) => state.currentResultUrl);
+  const currentResultUrl = useCurrentUrlStore(
+    (state) => state.currentResultUrl
+  );
   const setInput = useCurrentUrlStore((state) => state.setCurrentInputUrl);
 
   const notify = () => toast("Copied To Clipboard", { theme: "dark" });
@@ -16,7 +18,10 @@ const LinkExpirerComp = () => {
     (state) => state.setCurrentResultUrl
   );
   useEffect(() => {
-    setCurrentResultUrl("You will get the expirer link here.");
+    setCurrentResultUrl({
+      type: "info",
+      message: "You will get the expired url over here.",
+    });
   }, []);
 
   return (
@@ -34,14 +39,27 @@ const LinkExpirerComp = () => {
         className="px-3 py-1 border sm:h-10"
         asChild
         onClick={async () => {
-          await copyToClipboard(textToCopy);
+          await copyToClipboard(
+            currentResultUrl.type === "success" ? currentResultUrl.url : ""
+          );
           notify();
         }}
       >
         <div>
           <ItemContent>
-            <ItemTitle className="text-sm text-muted-foreground font-light">
-              {textToCopy}
+            <ItemTitle className={`text-sm font-light ${
+                currentResultUrl.type === "success"
+                  ? "text-white"
+                  : currentResultUrl.type === "info"
+                  ? "text-muted-foreground"
+                  : "text-destructive"
+              }`}
+            >
+              {currentResultUrl.type === "success"
+                ? currentResultUrl.url
+                : currentResultUrl.type === "error"
+                ? currentResultUrl.errorMessage
+                : currentResultUrl.message}
             </ItemTitle>
           </ItemContent>
           <ItemActions>

@@ -1,11 +1,26 @@
-import { CardDescription, CardTitle } from "./ui/card";
+import { motion } from "framer-motion";
+import { LayoutTextFlipHome } from "./TextFlip";
 
 const HomeTop = () => {
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <CardTitle className="text-5xl font-bold text-muted-foreground sm:text-8xl sm:font-black">LINK-X</CardTitle>
-      <CardDescription className="text-center text-md w-80 sm:w-2xl py-3 bg-background">A website to shorten, encrypt, expire, and generate qr code from a url.</CardDescription>
-    </div>
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: -12,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0, 
+      }}
+      transition={{
+        delay: 0.3,
+        duration: 0.5,
+        ease: "easeOut",
+      }}
+      className="flex flex-col items-center justify-end w-full h-full"
+    >
+      <LayoutTextFlipHome />
+    </motion.div>
   );
 };
 

@@ -70,7 +70,7 @@
   --card-foreground: oklch(0.9053 0.0245 293.557);
   --popover: oklch(0.2544 0.0301 292.7315);
   --popover-foreground: oklch(0.9053 0.0245 293.557);
-  --primary: oklch(0.7058 0.0777 302.0489);
+  --primary: oklch(70.58% 0.07773 302.023);
   --primary-foreground: oklch(0.2166 0.0215 292.8474);
   --secondary: oklch(0.4604 0.0472 295.5578);
   --secondary-foreground: oklch(0.9053 0.0245 293.557);
@@ -118,7 +118,7 @@
     1px 4px 6px 0px hsl(0 0% 0% / 0.06);
   --shadow-xl: 1px 2px 5px 1px hsl(0 0% 0% / 0.06),
     1px 8px 10px 0px hsl(0 0% 0% / 0.06);
-  --shadow-2xl: 1px 2px 5px 1px hsl(0 0% 0% / 0.15);
+  --shadow-2xl: 1px 2px 5px 1px hsla(0, 100%, 50%, 1);
 }
 
 @theme inline {
@@ -182,4 +182,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.clip-path{
+  clip-path: path("M 0,0 L 1700,0 L 1800,0 L 1900,500 L 0,500 Z");
 }
