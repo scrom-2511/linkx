@@ -4,9 +4,6 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { PasswordChecker } from "@/services/passwordChecker";
 import { useCurrentUrlStore } from "@/zustand/store";
-import { redirect } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-
 const Encrypted = () => {
   return (
     <div className="w-screen h-screen grid grid-rows-[250px_auto] sm:grid sm:grid-rows-2 p-10">

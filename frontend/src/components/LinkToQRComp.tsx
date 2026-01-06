@@ -11,7 +11,6 @@ const LinkToQR = () => {
   const setCurrentInputUrl = useCurrentUrlStore(
     (state) => state.setCurrentInputUrl
   );
-  const s = useExtraInputFields((state) => state.renderer)
   const renderqr = useExtraInputFields((state) => state.renderer);
   const setRenderer = useExtraInputFields((state) => state.setRenderer);
   const currentInputUrl = useCurrentUrlStore((state) => state.currentInputUrl);

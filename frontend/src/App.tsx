@@ -1,11 +1,10 @@
+import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import NotFound from "./components/NotFound";
 import SomeError from "./components/SomeError";
 import { ThemeProvider } from "./components/theme-provider";
-import { BackgroundBeamsWithCollision } from "./components/ui/background-beams-with-collision";
 import Encrypted from "./pages/Encrypted";
 import Home from "./pages/Home";
-import { Routes, Route } from "react-router-dom";
 
 const App = () => {
   return (
